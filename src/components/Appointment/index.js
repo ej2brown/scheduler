@@ -1,11 +1,26 @@
-import "components/Application/styles.scss";
+import React from "react";
 
-import Header from "./Header.js";
-import Empty from "./Empty.js";
-import Show from "./Show.js";
+import "./styles.scss";
 
+import Header from "./Header";
+import Empty from "./Empty";
+import Show from "./Show";
 
 export default function Application(props) {
-
-    return <article className="appointment"></article>
+  const { time, interview } = props;
+  return (
+    <>
+      <Header time={time} />
+      <article time={time} className="appointment">
+        {interview ? (
+          <Show
+            student={interview.student}
+            interviewer={interview.interviewer.name}
+          />
+        ) : (
+          <Empty />
+        )}
+      </article>
+    </>
+  );
 }
