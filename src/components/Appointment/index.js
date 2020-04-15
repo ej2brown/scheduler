@@ -6,12 +6,11 @@ import Header from "./Header";
 import Empty from "./Empty";
 import Show from "./Show";
 
-export default function Application(props) {
+export default function Appointment(props) {
   const { time, interview } = props;
   return (
-    <>
+      <article className="appointment">
       <Header time={time} />
-      <article time={time} className="appointment">
         {interview ? (
           <Show
             student={interview.student}
@@ -21,6 +20,5 @@ export default function Application(props) {
           <Empty />
         )}
       </article>
-    </>
   );
 }
