@@ -35,12 +35,11 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-        <DayList
-          days={days}
-          day={day}
-          setDay={setDay}
-        />
-
+          <DayList
+            days={days}
+            day={day}
+            setDay={setDay}
+          />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
@@ -49,37 +48,8 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
+        {/* Replace this with the schedule elements during the "The Scheduler" activity. */}
       </section>
     </main>
   );
 }
-
-/* 
-MemeList.js 
-
-import React from 'react';
-import Meme from './Meme';
-
-
-function MemeList(props) {
-    console.log(props);
-    // [<p>a</p>, <p>b</p>....]
-    const memes = props.list.map(meme => <Meme name={meme.name} url={meme.url}/>)
-    // for (let meme of memes) {
-    //     memes.push(<Meme name={meme.name} url={meme.url}/>)
-    //     meme.push(<div>
-        //     <h2>{props.name ? props.name : 'Default meme'}</h2>
-        //     {props.url && <img className='meme-img' src={props.url} />}
-        // </div>)
-    // }
-
-    return (
-        <div>
-            {memes}
-        </div>
-    )
-}
-
-export default MemeList;
-
-*/ 
