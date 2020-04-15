@@ -2,8 +2,7 @@ import React, { useState } from "react";
 
 import "components/Button.scss";
 
-const classNames = require("classnames"); //library
-
+import DayListItem from "./DayListItem.js";
 
 export default function Button(props) {
   
