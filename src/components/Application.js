@@ -7,58 +7,48 @@ import DayList from "components/DayList";
 
 import Appointment from "components/Appointment/index";
 
-const appointments = [
-  {
-    id: 1,
-    time: "12pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 1,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      },
-    },
-  },
-  {
-    id: 2,
-    time: "1pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 1,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      },
-    },
-  },
-  {
-    id: 2,
-    time: "1pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 1,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      },
-    },
-  },
-  {
-    key: "last",
-    time: "5pm",
-  },
-];
+import { getAppointmentsForDay } from "../helpers/selectors";
+
 export default function Application(props) {
-  const [day, setDay] = useState("Monday");
-  const [days, setDays] = useState([]);
+  const [state, setState] = useState({
+    day: 'Monday',
+    days: [],
+    appointments: {},
+    interviewers: {},
+  });
+
+  const setDay = (day) => setState({ ...state, day });
+
+  /*requests to endpoints for data*/
+  
+  const fetchData = () => {
+    Promise.all([
+      Promise.resolve(axios.get("/api/days")),
+      Promise.resolve(axios.get("/api/appointments")),
+    ]).then((all) => {
+
+      const [days, appointments] = all;
+
+      setState((oldData) => ({
+        ...oldData,
+        days: [...days.data],
+        appointments: { ...appointments.data },
+      }));
+    })
+    .catch(error => console.log(error))
+  };
 
   useEffect(() => {
     axios.get("/api/days").then((response) => {
       console.log(response);
-      setDays(response.data);
+      fetchData();
     });
   }, []);
+
+  const { day, days } = state;
+
+  const appointments = getAppointmentsForDay(state, state.day);
+  console.log('appointments',appointments); //TODO fix loop 
 
   return (
     <main className="layout">
