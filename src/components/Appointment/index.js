@@ -17,7 +17,7 @@ import useVisualMode from "hooks/useVisualMode";
 
 export default function Appointment(props) {
   const { id, time, interview, interviewers, onAdd } = props;
-
+console.log(props)
   /* visual mode used to change display of card */
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
@@ -70,7 +70,7 @@ export default function Appointment(props) {
       {mode === CREATE && (
         <Form
           interviewers={interviewers}
-          onCancel={() => back()}
+          onCancel={() => back(EMPTY)}
           onSave={save}
         />
       )}
@@ -79,19 +79,32 @@ export default function Appointment(props) {
       {mode === CONFIRM && (
         <Confirm
           onConfirm={deleteAppointment}
-          onCancel={() => back(SHOW)}
+          onCancel={() => back()}
           message="Are you sure you would like to delete?"
         />
       )}
       {mode === EDIT && (
         <Form
+          id={id}
           name={interview.student}
-          interviewer={interview.interviewer.id}
+          interviewer={interview.interviewer ? interview.interviewer.id : ""} 
           interviewers={interviewers}
-          onCancel={() => back(SHOW)}
+          onCancel={() => back()}
           onSave={save}
         />
       )}
+       {mode === ERROR_SAVE && (
+          <Error
+            message="Error: save cancelled."
+            onClose={() => back(CREATE)}
+          />  
+        )}
+        {mode === ERROR_DELETE && (
+          <Error
+            message="Error: delete cancelled."
+            onClose={() => transition(SHOW, true)}
+          />  
+        )}
     </article>
   );
 }
