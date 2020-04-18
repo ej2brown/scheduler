@@ -1,9 +1,18 @@
+sr/* displays all components, granular component*/
+/* Application component*/
+/* builds Appointment */
+/* builds Daylist */
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "components/Application.scss";
 import DayList from "components/DayList";
 import Appointment from "components/Appointment/index";
-import { getAppointmentsForDay, getInterview,  getInterviewersForDay } from "../helpers/selectors";
+import {
+  getAppointmentsForDay,
+  getInterview,
+  getInterviewersForDay,
+} from "../helpers/selectors";
 
 export default function Application(props) {
   const [state, setState] = useState({
@@ -13,7 +22,7 @@ export default function Application(props) {
     interviewers: {},
   });
 
-  /*requests to endpoints for data*/
+  /* requests to endpoints for data from db then enqueues changes to state */
   useEffect(() => {
     fetchData();
   }, []);
@@ -26,9 +35,8 @@ export default function Application(props) {
     ])
       .then((all) => {
         const [days, appointments, interviewers] = all;
-        console.log("all", all);
-        setState((oldData) => ({
-          ...oldData,
+        setState((prev) => ({
+          ...prev,
           days: [...days.data],
           appointments: { ...appointments.data },
           interviewers: { ...interviewers.data },
@@ -36,36 +44,46 @@ export default function Application(props) {
       })
       .catch((error) => console.log(error));
   };
-  
-  function bookInterview(id, interview) {
-    console.log(id, interview);
 
+  /* when Appointment component requests to db to save an interview */
+  function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
-      interview: { ...interview }
+      interview: { ...interview },
     };
     const appointments = {
       ...state.appointments,
-      [id]: appointment
+      [id]: appointment,
     };
 
-    return axios.put(`/api/appointments/${id}`, appointment )
-    .then(() => {
-      console.log('SENT PUT REQUEST')
-      setState({...state, appointments})
-      // fetchData()
-    })
-    .catch((error) => console.log(error));
+    return axios
+      .put(`/api/appointments/${id}`, appointment)
+      .then(() => {
+        console.log("SENT PUT REQUEST");
+        setState({ ...state, appointments });
+        // fetchData()
+      })
+      .catch((error) => console.log(error));
+  }
+  /* when Appointment component requests to db to delete an interview */
+  function cancelInterview(id) {
+    const target = state.appointments[id];
+    const appointments = {
+      ...state.appointments,
+      [id]: { ...target, interview: null },
+    };
+    return axios({
+      method: "DELETE",
+      url: `api/appointments/${id}`,
+    }).then((result) => {
+      setState({ ...state, appointments });
+      console.log(result);
+    });
   }
 
-
-  
-  
-
-  const { day, days } = state;
-
   /* transform to reduce interviw data duplication */
-  const appointments = getAppointmentsForDay(state, state.day);
+  const { day, days } = state;
+  const appointments = getAppointmentsForDay(state, day);
   const schedule = appointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
     const interviewers = getInterviewersForDay(state, day);
@@ -77,10 +95,11 @@ export default function Application(props) {
         interview={interview}
         interviewers={interviewers}
         bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
       />
     );
   });
-  
+
   /* console.logs to delete */
   console.log("schedule", schedule);
   console.log("appointments", appointments);
@@ -98,7 +117,11 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-          <DayList days={days} day={day} setDay={day => setState(({ ...state, day }))}/>
+          <DayList
+            days={days}
+            day={day}
+            setDay={(day) => setState({ ...state, day })}
+          />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
