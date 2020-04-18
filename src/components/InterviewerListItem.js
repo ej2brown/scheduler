@@ -13,7 +13,7 @@ const interviewerClass = `interviewers__item ${
 
 
   return (
-    <li className={interviewerClass} onClick={setInterview}>
+    <li className={interviewerClass} selected={selected} onClick={setInterview}>
       <img
         className="interviewers__item-image"
         src={avatar}

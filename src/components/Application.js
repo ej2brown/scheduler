@@ -3,7 +3,7 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "components/DayList";
 import Appointment from "components/Appointment/index";
-import { getAppointmentsForDay, getInterview } from "../helpers/selectors";
+import { getAppointmentsForDay, getInterview,  getInterviewersForDay } from "../helpers/selectors";
 
 export default function Application(props) {
   const [state, setState] = useState({
@@ -36,6 +36,31 @@ export default function Application(props) {
       })
       .catch((error) => console.log(error));
   };
+  
+  function bookInterview(id, interview) {
+    console.log(id, interview);
+
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    return axios.put(`/api/appointments/${id}`, appointment )
+    .then(() => {
+      console.log('SENT PUT REQUEST')
+      setState({...state, appointments})
+      // fetchData()
+    })
+    .catch((error) => console.log(error));
+  }
+
+
+  
+  
 
   const { day, days } = state;
 
@@ -43,12 +68,15 @@ export default function Application(props) {
   const appointments = getAppointmentsForDay(state, state.day);
   const schedule = appointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
+    const interviewers = getInterviewersForDay(state, day);
     return (
       <Appointment
         key={appointment.id}
         id={appointment.id}
         time={appointment.time}
         interview={interview}
+        interviewers={interviewers}
+        bookInterview={bookInterview}
       />
     );
   });
@@ -70,7 +98,7 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-          <DayList days={days} day={day} setDay={day => setState(prev =>({ ...state, day }))}/>
+          <DayList days={days} day={day} setDay={day => setState(({ ...state, day }))}/>
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
@@ -79,9 +107,7 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {appointments.map((appointment) => (
-          <Appointment key={appointment.id} {...appointment} />
-        ))}
+        <>{schedule}</>
       </section>
     </main>
   );
