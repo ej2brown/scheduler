@@ -40,10 +40,10 @@ export default function Application(props) {
           key={appointment.id}
           id={appointment.id}
           time={appointment.time}
-          interview={() => getInterview(state, appointment.interview)}
+          interview={getInterview(state, appointment.interview)}
           interviewers={interviewers}
-          bookInterview={() => bookInterview}
-          cancelInterview={() => cancelInterview}
+          bookInterview={bookInterview}
+          cancelInterview={cancelInterview}
         />
       );
     }

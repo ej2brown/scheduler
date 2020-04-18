@@ -1,3 +1,7 @@
+/* displays interview cards */
+/* Show component*/
+/* onClick icons for edit/delete */
+
 import React from "react";
 
 export default function Show(props) {
@@ -17,11 +21,14 @@ export default function Show(props) {
             className="appointment__actions-button"
             src="images/edit.png"
             alt="Edit"
+            // onClick={onEdit}
+            onClick={() => onEdit(id)}
           />
           <img
             className="appointment__actions-button"
             src="images/trash.png"
             alt="Delete"
+            // onClick={onDelete}
             onClick={() => onDelete(id)}
           />
         </section>

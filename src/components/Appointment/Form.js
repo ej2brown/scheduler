@@ -1,7 +1,10 @@
+/* displays form to add/edit interview info */
+/* Form component*/
+/* builds InterviewerList */
+/* builds Buttons */
+
 import React, { useState } from "react";
-
 import Button from "../Button.js";
-
 import InterviewerList from "../InterviewerList.js";
 
 export default function Form(props) {
@@ -16,7 +19,7 @@ export default function Form(props) {
 
   const cancel = () => {
     reset();
-    return onCancel;
+    return onCancel();
   };
 
   return (
@@ -40,13 +43,10 @@ export default function Form(props) {
       </section>
       <section className="appointment__card-right">
         <section className="appointment__actions">
-          <Button onClick={() => {
-            console.log('click') 
-            cancel() }
-            } danger>
+          <Button onClick={cancel} danger>
             Cancel
           </Button>
-          <Button onClick={() => onSave(name, interviewer)} confirm>
+          <Button onClick={() => name && interviewer && onSave(name, interviewer)} confirm>
             Save
           </Button>
         </section>
