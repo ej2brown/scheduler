@@ -4,6 +4,7 @@
 
 import React from "react";
 import "./styles.scss";
+
 import Header from "./Header";
 import Empty from "./Empty";
 import Show from "./Show";
@@ -11,6 +12,7 @@ import Form from "./Form";
 import Confirm from "./Confirm";
 import Status from "components/Appointment/Status";
 import Error from "components/Appointment/Error";
+
 import useVisualMode from "hooks/useVisualMode";
 
 export default function Appointment(props) {
@@ -24,6 +26,8 @@ export default function Appointment(props) {
   const DELETING = "DELETING";
   const CONFIRM = "CONFIRM";
   const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
 
   const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
@@ -33,13 +37,21 @@ export default function Appointment(props) {
       student: name,
       interviewer,
     };
-    props.bookInterview(id, interview).then(() => transition(SHOW));
+    transition(SAVING);
+
+    props
+      .bookInterview(props.id, interview)
+      .then(() => transition(SHOW))
+      .catch((event) => transition(ERROR_SAVE, true));
   }
 
   /* sends to Application component for a DELETE request */
   function deleteAppointment() {
     transition(DELETING, true);
-    props.cancelInterview(id).then(() => transition(EMPTY));
+    props
+      .cancelInterview(id)
+      .then(() => transition(EMPTY))
+      .catch((event) => transition(ERROR_DELETE, true));
   }
 
   return (
@@ -68,7 +80,7 @@ export default function Appointment(props) {
         <Confirm
           onConfirm={deleteAppointment}
           onCancel={() => back(SHOW)}
-          message="Are you sure?"
+          message="Are you sure you would like to delete?"
         />
       )}
       {mode === EDIT && (
