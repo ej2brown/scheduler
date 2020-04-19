@@ -8,7 +8,6 @@ import Application from "components/Application";
 
 // import tweets from "./tweets.json";
 
-
 ReactDOM.render(<Application />, document.getElementById("root"));
 
 // const tweet = tweets[0];
