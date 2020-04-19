@@ -17,7 +17,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public --ci",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "pretty": "prettier --write --tab-width 4 \"src/**/*.js\"",
+    "precommit": "lint-staged && npm test"
   },
   "browserslist": {
     "production": [
@@ -41,13 +43,23 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^8.0.9",
     "@testing-library/react-hooks": "^3.2.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.19.0",
+    "husky": "^4.2.5",
+    "jest": "^25.3.0",
+    "lint-staged": "^10.1.6",
     "node-sass": "^4.13.1",
     "react-test-renderer": "^16.9.0"
   },
-  "jest": {
-    "watchPathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/.git/"
+  "lint-staged": {
+    "*.js": [
+      "npm run pretty",
+      "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
