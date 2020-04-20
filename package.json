@@ -49,6 +49,7 @@
     "jest": "^25.3.0",
     "lint-staged": "^10.1.6",
     "node-sass": "^4.13.1",
+    "prop-types": "^15.7.2",
     "react-test-renderer": "^16.9.0"
   },
   "lint-staged": {
