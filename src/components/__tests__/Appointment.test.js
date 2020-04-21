@@ -15,7 +15,7 @@ import Appointment from "components/Appointment";
 afterEach(cleanup);
 
 /*  A test that renders a React Component */
-describe("Form", () => {
+describe("Appointment", () => {
     it("renders without crashing", () => {
         render(<Appointment />);
     });
