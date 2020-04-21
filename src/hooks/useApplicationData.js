@@ -23,13 +23,14 @@ export default function useApplicationData() {
 
     const fetchData = () => {
         Promise.all([
-            Promise.resolve(axios.get("/api/days")),
-            Promise.resolve(axios.get("/api/appointments")),
-            Promise.resolve(axios.get("/api/interviewers")),
+            axios.get("/api/days"),
+            axios.get("/api/appointments"),
+            axios.get("/api/interviewers"),
         ])
             .then((all) => {
+                console.log(all);
                 const [days, appointments, interviewers] = all; //destruct array
-                setState((prev) => ({
+                return setState((prev) => ({
                     ...prev,
                     days: [...days.data],
                     appointments: { ...appointments.data },
