@@ -16,8 +16,7 @@ import Error from "components/Appointment/Error";
 import useVisualMode from "hooks/useVisualMode";
 
 export default function Appointment(props) {
-    const { id, time, interview, interviewers, onAdd } = props;
-    console.log(props);
+    const { id, time, interview, interviewers } = props;
     /* visual mode used to change display of card */
     const EMPTY = "EMPTY";
     const SHOW = "SHOW";
@@ -40,9 +39,9 @@ export default function Appointment(props) {
         transition(SAVING);
 
         props
-            .bookInterview(props.id, interview)
+            .bookInterview(id, interview)
             .then(() => transition(SHOW))
-            .catch((event) => transition(ERROR_SAVE, true));
+            .catch(() => transition(ERROR_SAVE, true));
     }
 
     /* sends to Application component for a DELETE request */
@@ -51,9 +50,8 @@ export default function Appointment(props) {
         props
             .cancelInterview(id)
             .then(() => transition(EMPTY))
-            .catch((event) => transition(ERROR_DELETE, true));
+            .catch(() => transition(ERROR_DELETE, true));
     }
-
     return (
         <article className="appointment">
             <Header time={time} />
@@ -87,6 +85,7 @@ export default function Appointment(props) {
                 <Form
                     id={id}
                     name={interview.student}
+                    value={interview.student}
                     interviewer={
                         interview.interviewer ? interview.interviewer.id : ""
                     }

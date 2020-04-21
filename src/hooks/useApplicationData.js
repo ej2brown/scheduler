@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function useApplicationData() {
-    /* The state object will maintain the same structure */
+    /* The useState (API method) object updates the components state */
     const [state, setState] = useState({
         day: "Monday",
         days: [],
@@ -28,9 +28,7 @@ export default function useApplicationData() {
             Promise.resolve(axios.get("/api/interviewers")),
         ])
             .then((all) => {
-                console.log(all);
-
-                const [days, appointments, interviewers] = all;
+                const [days, appointments, interviewers] = all; //destruct array
                 setState((prev) => ({
                     ...prev,
                     days: [...days.data],
@@ -43,7 +41,7 @@ export default function useApplicationData() {
 
     /* when Appointment component requests to db to save an interview */
     /* bookInterview action makes an HTTP request and updates the local state */
-    function bookInterview(id, interview) {
+    async function bookInterview(id, interview) {
         const appointment = {
             ...state.appointments[id],
             interview: { ...interview },
@@ -53,31 +51,33 @@ export default function useApplicationData() {
             [id]: appointment,
         };
         // const days = spotsRemaining()
-        return axios
-            .put(`/api/appointments/${id}`, appointment)
-            .then(() => {
-                setState({ ...state, appointments });
-                // fetchData()
-                fetchData();
-            })
-            .catch((error) => console.log(error));
+        try {
+            await axios.put(`/api/appointments/${id}`, appointment);
+            setState({ ...state, appointments });
+            fetchData();
+        } catch (error) {
+            return console.log(error);
+        }
     }
 
     /* when Appointment component requests to db to delete an interview */
     /* cancelInterview action makes an HTTP request and updates the local state */
-    function cancelInterview(id) {
+    async function cancelInterview(id) {
         const target = state.appointments[id];
         const appointments = {
             ...state.appointments,
             [id]: { ...target, interview: null },
         };
-        return axios({
-            method: "DELETE",
-            url: `api/appointments/${id}`,
-        }).then((result) => {
+        try {
+            await axios({
+                method: "DELETE",
+                url: `api/appointments/${id}`,
+            });
             setState({ ...state, appointments });
             fetchData();
-        });
+        } catch (error) {
+            return console.log(error);
+        }
     }
 
     // function spotsRemaining(day, days, appointments) {

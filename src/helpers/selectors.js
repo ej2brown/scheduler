@@ -15,9 +15,8 @@ export function getInterviewersForDay(state, day) {
     const selectedDay = days.filter((days) => days.name === day);
     const interviewersForDay =
         selectedDay.length > 0
-            ? selectedDay[0].interviewers.map((id) => state.interviewers[id])
+            ? selectedDay[0].interviewers.map((id) => interviewers[id])
             : [];
-
     return interviewersForDay;
 }
 
