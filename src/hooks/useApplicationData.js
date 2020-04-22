@@ -3,6 +3,8 @@
 import { useEffect, useReducer } from "react";
 import axios from "axios";
 
+const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+
 const SET_DAY = "SET_DAY";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW = "SET_INTERVIEW";
@@ -48,28 +50,16 @@ export default function useApplicationData() {
 
     /* requests to endpoints for data from db then enqueues changes to state */
     useEffect(() => {
-        const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-        webSocket.onmessage = function (event) {
-            console.log("ping");
-            console.log("HERE", event.data);
-            webSocket.send(
-                "Here's some text that the server is urgently awaiting!"
-            );
-        };
         //client side to server
         webSocket.addEventListener("open", function (event) {
             webSocket.send("ping");
         });
         webSocket.addEventListener("message", function (event) {
-            console.log("Message from server ", event.data);
+            // console.log("Message from server ", JSON.parse(event.data).type);
+            if (JSON.parse(event.data).type) return fetchData();
         });
 
-        webSocket.onmessage = function (event) {
-            console.debug("WebSocket message received:", event);
-        };
         webSocket.onopen = function (event) {
-            //browser console
-            console.log("ping");
             console.log("WebSocket is open now.");
         };
 
@@ -106,7 +96,7 @@ export default function useApplicationData() {
             [id]: appointment,
         };
         try {
-            await axios.put(`/api/appointments/${id}`, appointments);
+            await axios.put(`/api/appointments/${id}`, appointment);
             dispatch({ type: SET_INTERVIEW, appointments });
             fetchData();
         } catch (error) {
