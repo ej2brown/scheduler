@@ -1,6 +1,10 @@
 /* use for seperation of concerns
 useApplicationData Hook will return an object with four keys */
 
+/*TODO 
+[] websocket 
+[] reducer 
+*/
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -43,6 +47,7 @@ export default function useApplicationData() {
     /* when Appointment component requests to db to save an interview */
     /* bookInterview action makes an HTTP request and updates the local state */
     async function bookInterview(id, interview) {
+        console.log("PUT REQUEST APPENDING");
         const appointment = {
             ...state.appointments[id],
             interview: { ...interview },
@@ -54,6 +59,7 @@ export default function useApplicationData() {
         // const days = spotsRemaining()
         try {
             await axios.put(`/api/appointments/${id}`, appointment);
+            console.log("PUT REQUEST APPROVED");
             setState({ ...state, appointments });
             fetchData();
         } catch (error) {
@@ -70,10 +76,7 @@ export default function useApplicationData() {
             [id]: { ...target, interview: null },
         };
         try {
-            await axios({
-                method: "DELETE",
-                url: `api/appointments/${id}`,
-            });
+            await axios.delete(`api/appointments/${id}`, target);
             setState({ ...state, appointments });
             fetchData();
         } catch (error) {
