@@ -5,12 +5,44 @@ useApplicationData Hook will return an object with four keys */
 [] websocket 
 [] reducer 
 */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import axios from "axios";
+
+const SET_DAY = "SET_DAY";
+const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+const SET_INTERVIEW = "SET_INTERVIEW";
+const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+
+function reducer(state, action) {
+    switch (action.type) {
+        case SET_DAY:
+            return {
+                ...state,
+                day: action.day,
+            };
+        case SET_APPLICATION_DATA:
+            return {
+                ...state,
+                days: action.days,
+                appointments: action.appointments,
+                interviewers: action.interviewers,
+            };
+        case SET_INTERVIEW: {
+            return {
+                ...state,
+                appointments: action.appointments,
+            };
+        }
+        default:
+            throw new Error(
+                `Tried to reduce with unsupported action type: ${action.type}`
+            );
+    }
+}
 
 export default function useApplicationData() {
     /* The useState (API method) object updates the components state */
-    const [state, setState] = useState({
+    const [state, dispatch] = useReducer(reducer, {
         day: "Monday",
         days: [],
         appointments: {},
@@ -18,7 +50,7 @@ export default function useApplicationData() {
     });
 
     /* setDay action can be used to set the current day */
-    const setDay = (day) => setState({ ...state, day });
+    const setDay = (day) => dispatch({ type: SET_DAY, day });
 
     /* requests to endpoints for data from db then enqueues changes to state */
     useEffect(() => {
@@ -32,14 +64,13 @@ export default function useApplicationData() {
             axios.get("/api/interviewers"),
         ])
             .then((all) => {
-                console.log(all);
                 const [days, appointments, interviewers] = all; //destruct array
-                return setState((prev) => ({
-                    ...prev,
-                    days: [...days.data],
-                    appointments: { ...appointments.data },
-                    interviewers: { ...interviewers.data },
-                }));
+                dispatch({
+                    type: SET_APPLICATION_DATA,
+                    days: days.data,
+                    appointments: appointments.data,
+                    interviewers: interviewers.data,
+                });
             })
             .catch((error) => console.log(error));
     };
@@ -47,7 +78,6 @@ export default function useApplicationData() {
     /* when Appointment component requests to db to save an interview */
     /* bookInterview action makes an HTTP request and updates the local state */
     async function bookInterview(id, interview) {
-        console.log("PUT REQUEST APPENDING");
         const appointment = {
             ...state.appointments[id],
             interview: { ...interview },
@@ -59,8 +89,7 @@ export default function useApplicationData() {
         // const days = spotsRemaining()
         try {
             await axios.put(`/api/appointments/${id}`, appointment);
-            console.log("PUT REQUEST APPROVED");
-            setState({ ...state, appointments });
+            dispatch({ type: SET_INTERVIEW, appointments });
             fetchData();
         } catch (error) {
             return console.log(error);
@@ -77,7 +106,7 @@ export default function useApplicationData() {
         };
         try {
             await axios.delete(`api/appointments/${id}`, target);
-            setState({ ...state, appointments });
+            dispatch({ type: SET_INTERVIEW, appointments });
             fetchData();
         } catch (error) {
             return console.log(error);
