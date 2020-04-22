@@ -8,15 +8,13 @@ const InterviewerList = (props) => {
     const { onChange, interviewers, value } = props;
     const Interviewers = interviewers.map((interviewer) => {
         return (
-            <div>
-                <InterviewerListItem
-                    key={interviewer.id}
-                    name={interviewer.name}
-                    avatar={interviewer.avatar}
-                    selected={interviewer.id === value}
-                    setInterview={() => onChange(interviewer.id)}
-                />
-            </div>
+            <InterviewerListItem
+                key={interviewer.id}
+                name={interviewer.name}
+                avatar={interviewer.avatar}
+                selected={interviewer.id === value}
+                setInterview={() => onChange(interviewer.id)}
+            />
         );
     });
     return (
