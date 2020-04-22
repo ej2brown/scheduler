@@ -50,25 +50,14 @@ export default function useApplicationData() {
 
     /* requests to endpoints for data from db then enqueues changes to state */
     useEffect(() => {
-        //client side to server
-        // webSocket.addEventListener("open", function (event) {
-        //   webSocket.send("ping");
-        // });
         /* looks for a message from server with 'SET_INTERVIEW' */
         webSocket.addEventListener("message", function (event) {
             if (JSON.parse(event.data).type === SET_INTERVIEW)
                 return fetchData();
         });
 
-        webSocket.onopen = function (event) {
-            console.log("WebSocket is open now.");
-        };
-        /* prevents stale state bug and transition to correct mode when interview value changes*/
-        if (interview && mode === EMPTY) transition(SHOW);
-        if (interview === null && mode === SHOW) transition(EMPTY);
-
         fetchData();
-    }, [interview, transition, mode]);
+    }, []);
 
     const fetchData = () => {
         Promise.all([
@@ -101,8 +90,7 @@ export default function useApplicationData() {
         };
         try {
             await axios.put(`/api/appointments/${id}`, appointment);
-            dispatch({ type: SET_INTERVIEW, appointments });
-            fetchData();
+            await dispatch({ type: SET_INTERVIEW, appointments });
         } catch (error) {
             return console.log(error);
         }
@@ -119,7 +107,6 @@ export default function useApplicationData() {
         try {
             await axios.delete(`api/appointments/${id}`, target);
             dispatch({ type: SET_INTERVIEW, appointments });
-            fetchData();
         } catch (error) {
             return console.log(error);
         }
