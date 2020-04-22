@@ -10,9 +10,8 @@ import Empty from "./Empty";
 import Show from "./Show";
 import Form from "./Form";
 import Confirm from "./Confirm";
-import Status from "components/Appointment/Status";
-import Error from "components/Appointment/Error";
-
+import Status from "./Status";
+import Error from "./Error";
 import useVisualMode from "hooks/useVisualMode";
 
 export default function Appointment(props) {
@@ -31,7 +30,7 @@ export default function Appointment(props) {
     const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
     /* sends to Application component for a PUT request */
-    function save(name, interviewer) {
+    function saveAppointment(name, interviewer) {
         const interview = {
             student: name,
             interviewer,
@@ -53,7 +52,7 @@ export default function Appointment(props) {
             .catch(() => transition(ERROR_DELETE, true));
     }
     return (
-        <article className="appointment">
+        <article className="appointment" data-testid="appointment">
             <Header time={time} />
             {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
             {mode === SHOW && (
@@ -68,8 +67,8 @@ export default function Appointment(props) {
             {mode === CREATE && (
                 <Form
                     interviewers={interviewers}
-                    onCancel={() => back(EMPTY)}
-                    onSave={save}
+                    onCancel={() => back()}
+                    onSave={saveAppointment}
                 />
             )}
             {mode === SAVING && <Status message="Saving" />}
@@ -91,18 +90,18 @@ export default function Appointment(props) {
                     }
                     interviewers={interviewers}
                     onCancel={() => back()}
-                    onSave={save}
+                    onSave={saveAppointment}
                 />
             )}
             {mode === ERROR_SAVE && (
                 <Error
-                    message="Error: save cancelled."
-                    onClose={() => back(CREATE)}
+                    message="Error: Could not book appointment."
+                    onClose={() => back()}
                 />
             )}
             {mode === ERROR_DELETE && (
                 <Error
-                    message="Error: delete cancelled."
+                    message="Error: Could not cancel appointment."
                     onClose={() => transition(SHOW, true)}
                 />
             )}
