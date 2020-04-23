@@ -6,6 +6,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
+    "jest": "^24.9.0",
     "normalize.css": "^8.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -19,7 +20,8 @@
     "storybook": "start-storybook -p 9009 -s public --ci",
     "build-storybook": "build-storybook -s public",
     "pretty": "prettier --write --tab-width 4 \"src/**/*.js\"",
-    "precommit": "lint-staged && npm test"
+    "precommit": "lint-staged && npm test",
+    "cypress": "cypress open -P ."
   },
   "browserslist": {
     "production": [
@@ -46,7 +48,6 @@
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.19.0",
     "husky": "^4.2.5",
-    "jest": "^25.3.0",
     "lint-staged": "^10.1.6",
     "node-sass": "^4.13.1",
     "prop-types": "^15.7.2",
