@@ -90,7 +90,7 @@ export default function useApplicationData() {
         };
         try {
             await axios.put(`/api/appointments/${id}`, appointment);
-            await dispatch({ type: SET_INTERVIEW, appointments });
+            dispatch({ type: SET_INTERVIEW, appointments });
         } catch (error) {
             return console.log(error);
         }
@@ -105,8 +105,9 @@ export default function useApplicationData() {
             [id]: { ...target, interview: null },
         };
         try {
-            await axios.delete(`api/appointments/${id}`, target);
-            dispatch({ type: SET_INTERVIEW, appointments });
+            await axios.delete(`api/appointments/${id}`);
+            await dispatch({ type: SET_INTERVIEW, appointments });
+            console.log("afterdispatch");
         } catch (error) {
             return console.log(error);
         }

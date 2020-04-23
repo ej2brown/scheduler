@@ -27,7 +27,11 @@ const fixtures = {
             time: "2pm",
             interview: { student: "Leopold Silvers", interviewer: 4 },
         },
-        "4": { id: 4, time: "3pm", interview: null },
+        "4": {
+            id: 4,
+            time: "3pm",
+            interview: { student: "Leopodsdsdsdld Silvers", interviewer: 1 },
+        },
     },
     interviewers: {
         "1": {
@@ -54,7 +58,7 @@ const fixtures = {
 };
 
 export default {
-    // defaults: { baseURL: "" },
+    defaults: { baseURL: "" },
     get: jest.fn((url) => {
         if (url === "/api/days") {
             return Promise.resolve({
@@ -65,7 +69,6 @@ export default {
         }
 
         if (url === "/api/appointments") {
-            /* Resolve appointments data */
             return Promise.resolve({
                 status: 200,
                 statusText: "OK",
@@ -74,7 +77,6 @@ export default {
         }
 
         if (url === "/api/interviewers") {
-            /* Resolve interviewers data */
             return Promise.resolve({
                 status: 200,
                 statusText: "OK",
@@ -82,15 +84,16 @@ export default {
             });
         }
     }),
-
     put: jest.fn((url) => {
+        console.log("put", url);
+
         return Promise.resolve({
             status: 204,
             statusText: "No Content",
         });
     }),
-
     delete: jest.fn((url) => {
+        console.log("delete", url);
         return Promise.resolve({
             status: 204,
             statusText: "No Content",

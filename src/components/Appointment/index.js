@@ -2,7 +2,7 @@
 /* Appointment component*/
 /* builds /appointment */
 
-import React from "react";
+import React, { useEffect } from "react";
 import "./styles.scss";
 
 import Header from "./Header";
@@ -29,6 +29,16 @@ export default function Appointment(props) {
 
     const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
+    /* prevents stale state bug and transition to correct mode when interview value changes*/
+    useEffect(() => {
+        if (interview && mode === EMPTY) {
+            transition(SHOW);
+        }
+        if (interview === null && mode === SHOW) {
+            transition(EMPTY);
+        }
+    }, [interview, transition, mode]);
+
     /* sends to Application component for a PUT request */
     function saveAppointment(name, interviewer) {
         const interview = {
@@ -36,7 +46,6 @@ export default function Appointment(props) {
             interviewer,
         };
         transition(SAVING);
-
         props
             .bookInterview(id, interview)
             .then(() => transition(SHOW))
@@ -55,7 +64,7 @@ export default function Appointment(props) {
         <article className="appointment" data-testid="appointment">
             <Header time={time} />
             {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
-            {mode === SHOW && (
+            {mode === SHOW && interview && (
                 <Show
                     id={id}
                     student={interview.student}
@@ -102,7 +111,7 @@ export default function Appointment(props) {
             {mode === ERROR_DELETE && (
                 <Error
                     message="Error: Could not cancel appointment."
-                    onClose={() => transition(SHOW, true)}
+                    onClose={() => transition(SHOW)}
                 />
             )}
         </article>

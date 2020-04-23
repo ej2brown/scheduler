@@ -21,6 +21,8 @@ import {
     getInterviewersForDay,
 } from "../helpers/selectors";
 
+// axios.defaults.baseURL = "http://localhost:8001/api";
+
 export default function Application(props) {
     const {
         state,
@@ -38,6 +40,7 @@ export default function Application(props) {
                 <Appointment
                     key={appointment.id}
                     id={appointment.id}
+                    day={day}
                     time={appointment.time}
                     interview={getInterview(state, appointment.interview)}
                     interviewers={interviewers}
