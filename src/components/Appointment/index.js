@@ -1,10 +1,5 @@
-/* handles queries and mode change display */
-/* Appointment component*/
-/* builds /appointment */
-
 import React, { useEffect } from "react";
 import "./styles.scss";
-
 import Header from "./Header";
 import Empty from "./Empty";
 import Show from "./Show";

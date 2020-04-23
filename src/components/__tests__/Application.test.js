@@ -20,21 +20,16 @@ import Application from "components/Application";
 afterEach(cleanup);
 
 describe("Application", () => {
-    // xit("renders without crashing", () => {
-    //   render(<Application />);
-    // });
+    xit("renders without crashing", () => {
+        render(<Application />);
+    });
 
-    // it("changes the schedule when a new day is selected", async () => {
-    //     const { getByText } = render(<Application />);
-    //     await waitForElement(() => getByText("Monday"));
-    //     fireEvent.click(getByText("Tuesday"));
-    //     expect(getByText("Leopold Silvers")).toBeInTheDocument();
-    // });
-
-    // it("loads data, books an interview and reduces the spots remaining for Monday by 1", () => {
-    //   const { container } = render(<Application />);
-    //   console.log(prettyDOM(container));
-    // });
+    it("changes the schedule when a new day is selected", async () => {
+        const { getByText } = render(<Application />);
+        await waitForElement(() => getByText("Monday"));
+        fireEvent.click(getByText("Tuesday"));
+        expect(getByText("Leopold Silvers")).toBeInTheDocument();
+    });
 
     it("loads data, books an interview and reduces the spots remaining for Monday by 1", async () => {
         const { container } = render(<Application />);
@@ -92,7 +87,7 @@ describe("Application", () => {
         const day = getAllByTestId(container, "day").find((day) =>
             queryByText(day, "Monday")
         );
-        expect(getByText(day, "1 spots remaining")).toBeInTheDocument();
+        expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
     });
 
     it("loads data, edits an interview and keeps the spots remaining for Monday the same", async () => {
@@ -126,7 +121,7 @@ describe("Application", () => {
         const day = getAllByTestId(container, "day").find((day) =>
             queryByText(day, "Monday")
         );
-        expect(getByText(day, "1 spots remaining")).toBeInTheDocument();
+        expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
     });
 
     it("shows the save error when failing to save an appointment", async () => {

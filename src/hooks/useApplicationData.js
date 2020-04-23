@@ -1,10 +1,8 @@
 /* use for seperation of concerns */
-
 import { useEffect, useReducer } from "react";
 import axios from "axios";
 
 const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-
 const SET_DAY = "SET_DAY";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW = "SET_INTERVIEW";
@@ -107,25 +105,10 @@ export default function useApplicationData() {
         try {
             await axios.delete(`api/appointments/${id}`);
             await dispatch({ type: SET_INTERVIEW, appointments });
-            console.log("afterdispatch");
         } catch (error) {
             return console.log(error);
         }
     }
-
-    // function spotsRemaining(day, days, appointments) {
-    //   return axios.get("/api/days").then((data) => {
-    // const selectedDay = data.filter((days) => days.name === day);
-    // console.log('selectedDay', selectedDay)
-    // const appointmentsForDay = selectedDay.filter((interview) => appointments.interview !== null);
-    // console.log('appointmentsForDay.length',appointmentsForDay.length)
-    //     setState((prev) => ({
-    //       ...prev,
-    //       days: data[0],
-    //     })).catch((error) => console.log(error));
-    //     return; //appointmentsForDay.length
-    //   });
-    // }
 
     return {
         state,

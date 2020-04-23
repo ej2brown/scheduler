@@ -1,8 +1,3 @@
-/* displays form to add/edit interview info */
-/* Form component*/
-/* builds InterviewerList */
-/* builds Buttons */
-
 import React, { useState } from "react";
 import Button from "../Button.js";
 import InterviewerList from "../InterviewerList.js";
@@ -65,10 +60,7 @@ export default function Form(props) {
                     </Button>
                     <Button
                         onClick={() => {
-                            validate(); //!name error
-                            // name && interviewer && onSave(name, interviewer);
-                            //   if (!name)
-                            //     setError("/student name cannot be blank/i");
+                            validate();
                         }}
                         confirm
                     >

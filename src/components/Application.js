@@ -1,15 +1,3 @@
-/* displays all components, granular component*/
-/* Application component*/
-/* builds Appointment */
-/* builds Daylist */
-
-/* TODO 
-[] remove console.logs 
-[] check/add catch errors 
-[] paths components to ./ 
-[] props object destructor
-[] set day 
-*/
 import React from "react";
 import "components/Application.scss";
 import DayList from "components/DayList";
@@ -20,8 +8,6 @@ import {
     getInterview,
     getInterviewersForDay,
 } from "../helpers/selectors";
-
-// axios.defaults.baseURL = "http://localhost:8001/api";
 
 export default function Application(props) {
     const {
