@@ -2,7 +2,6 @@
 import { useEffect, useReducer } from "react";
 import axios from "axios";
 
-const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
 const SET_DAY = "SET_DAY";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW = "SET_INTERVIEW";
@@ -48,12 +47,15 @@ export default function useApplicationData() {
 
     /* requests to endpoints for data from db then enqueues changes to state */
     useEffect(() => {
+        const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
         /* looks for a message from server with 'SET_INTERVIEW' */
-        webSocket.addEventListener("message", function (event) {
-            if (JSON.parse(event.data).type === SET_INTERVIEW)
-                return fetchData();
-        });
+        webSocket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
 
+            if (data.type === SET_INTERVIEW) {
+                return fetchData();
+            }
+        };
         fetchData();
     }, []);
 
@@ -63,8 +65,7 @@ export default function useApplicationData() {
             axios.get("/api/appointments"),
             axios.get("/api/interviewers"),
         ])
-            .then((all) => {
-                const [days, appointments, interviewers] = all; //destruct array
+            .then(([days, appointments, interviewers]) => {
                 dispatch({
                     type: SET_APPLICATION_DATA,
                     days: days.data,
@@ -86,9 +87,17 @@ export default function useApplicationData() {
             ...state.appointments,
             [id]: appointment,
         };
+        let action = false;
+        if (!state.appointments[id].interview) {
+            action = "removeSpot";
+        }
+
+        const day = state.day;
+        const days = state.days;
+        const updatedDay = spotsRemaining(day, days, action);
         try {
             await axios.put(`/api/appointments/${id}`, appointment);
-            dispatch({ type: SET_INTERVIEW, appointments });
+            dispatch({ type: SET_INTERVIEW, appointments, updatedDay });
         } catch (error) {
             return console.log(error);
         }
@@ -102,12 +111,28 @@ export default function useApplicationData() {
             ...state.appointments,
             [id]: { ...target, interview: null },
         };
+        const day = state.day;
+        const days = state.days;
+        const addSpot = "addSpot";
+
+        const updatedDay = spotsRemaining(day, days, addSpot);
         try {
             await axios.delete(`api/appointments/${id}`);
-            await dispatch({ type: SET_INTERVIEW, appointments });
+            dispatch({ type: SET_INTERVIEW, appointments, updatedDay });
         } catch (error) {
             return console.log(error);
         }
+    }
+
+    function spotsRemaining(day, days, action) {
+        const selectedDay = days.filter((days) => days.name === day);
+
+        if (action === "addSpot") {
+            selectedDay[0].spots += 1;
+        } else if (action === "removeSpot") {
+            selectedDay[0].spots -= 1;
+        }
+        return selectedDay[0];
     }
 
     return {
