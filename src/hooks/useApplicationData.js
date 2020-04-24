@@ -57,6 +57,7 @@ export default function useApplicationData() {
             }
         };
         fetchData();
+        return () => webSocket.close();
     }, []);
 
     const fetchData = () => {
